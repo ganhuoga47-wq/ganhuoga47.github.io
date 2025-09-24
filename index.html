@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>云善绘 · 一键下载（增强唤起）</title>
+<style>
+  :root{--blue:#0b67b2;--bg:#f6f9fc}
+  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#123;padding:28px;display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .card{width:100%;max-width:560px;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(2,12,34,0.06);padding:26px;text-align:center}
+  h1{margin:6px 0 6px;font-size:20px;color:var(--blue)}
+  p.lead{color:#456;margin:0 0 18px}
+  .btn{display:inline-block;padding:12px 22px;margin:6px 0;background:var(--blue);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;box-shadow:0 10px 24px rgba(11,103,178,0.14)}
+  .sub{margin-top:12px;color:#6b7785;font-size:13px}
+  .overlay{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;max-width:560px;width:calc(100% - 40px);padding:12px;border-radius:10px;background:#fff8e6;color:#8a5a00;box-shadow:0 6px 20px rgba(0,0,0,0.08);display:none}
+</style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="title">
+    <h1 id="title">🌥️ 云善绘 — 一键下载（增强版）</h1>
+    <p class="lead">请根据需要点击下面任意按钮：页面会尽最大可能直接在外部浏览器中打开下载链接（适配多种安卓机型）。</p>
+
+    <a id="btnDefault" class="btn" href="#">📥 默认下载</a><br>
+    <a id="btnAlt1" class="btn" href="#">📥 备用下载1</a><br>
+    <a id="btnAlt2" class="btn" href="#">🍎 苹果下载专用</a>
+
+    <p class="sub">若自动唤起失败：请在微信右上角选择「在浏览器中打开」，或复制粘贴到手机浏览器中。</p>
+  </div>
+
+  <div id="overlay" class="overlay">检测到你在微信内打开：请使用右上角菜单选择“在浏览器中打开”，或长按复制打开。</div>
+
+<script>
+(function(){
+  const urls = {
+    default: "https://az.yushanhui.cc/api/oss/down/local/5/1",
+    alt1: "http://47.57.7.209:52833/api/oss/down/local/5/1",
+    alt2: "https://app.yun3hui.cc/tutafk"
+  };
+
+  const overlay = document.getElementById('overlay');
+  const btnDefault = document.getElementById('btnDefault');
+  const btnAlt1 = document.getElementById('btnAlt1');
+  const btnAlt2 = document.getElementById('btnAlt2');
+
+  function ua(){ return navigator.userAgent || ''; }
+  function isWeChat(){ return /MicroMessenger/i.test(ua()); }
+  function isAndroid(){ return /Android/i.test(ua()); }
+  function isIOS(){ return /iPhone|iPad|iPod/i.test(ua()); }
+
+  function tryOpenExternal(url) {
+    if (!isWeChat()) {
+      try { window.open(url, '_blank'); } catch(e){ location.href = url; }
+      return;
+    }
+    if (isAndroid()) {
+      try {
+        const intentUrl = 'intent://' + url.replace(/^https?:\/\//,'') + '#Intent;scheme=https;package=com.android.chrome;end';
+        window.location.href = intentUrl;
+      } catch(e) {}
+      setTimeout(function(){
+        try { window.open(url, '_blank'); } catch(e){}
+        try {
+          const ifr = document.createElement('iframe');
+          ifr.style.display = 'none';
+          ifr.src = url;
+          document.body.appendChild(ifr);
+          setTimeout(()=>{ document.body.removeChild(ifr); }, 1500);
+        } catch(e){}
+        showOverlay();
+      }, 900);
+      return;
+    }
+    if (isIOS()) {
+      try { window.open(url, '_blank'); } catch(e){}
+      showOverlay();
+      return;
+    }
+    try { window.open(url, '_blank'); } catch(e){ location.href = url; }
+    showOverlay();
+  }
+
+  function showOverlay(){
+    overlay.style.display = 'block';
+    setTimeout(()=>{ overlay.style.display = 'none'; }, 9000);
+  }
+
+  btnDefault.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.default); });
+  btnAlt1.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.alt1); });
+  btnAlt2.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.alt2); });
+
+  window.addEventListener('load', function(){
+    if (isWeChat()) {
+      setTimeout(()=>{ overlay.style.display = 'block'; }, 800);
+      setTimeout(()=>{ overlay.style.display = 'none'; }, 6000);
+    }
+  });
+})();
+</script>
+</body>
+</html>
