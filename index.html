@@ -22,7 +22,8 @@
 
     <a id="btnDefault" class="btn" href="#">📥 默认下载</a><br>
     <a id="btnAlt1" class="btn" href="#">📥 备用下载1</a><br>
-    <a id="btnAlt2" class="btn" href="#">🍎 苹果下载专用</a>
+    <a id="btnAlt2" class="btn" href="#">🍎 苹果下载专用</a><br>
+    <a id="btnXiyou" class="btn" href="#">⚡ 西柚加速器下载</a>
 
     <p class="sub">若自动唤起失败：请在微信右上角选择「在浏览器中打开」，或复制粘贴到手机浏览器中。</p>
   </div>
@@ -34,13 +35,15 @@
   const urls = {
     default: "https://az.yushanhui.cc/api/oss/down/local/5/1",
     alt1: "http://47.57.7.209:52833/api/oss/down/local/5/1",
-    alt2: "https://fcaberneeenim.com/2cgqyb"
+    alt2: "https://fcaberneeenim.com/2cgqyb",
+    xiyou: "https://www.xyvpn.app/#/"   // 西柚加速器跳转地址
   };
 
   const overlay = document.getElementById('overlay');
   const btnDefault = document.getElementById('btnDefault');
   const btnAlt1 = document.getElementById('btnAlt1');
   const btnAlt2 = document.getElementById('btnAlt2');
+  const btnXiyou = document.getElementById('btnXiyou');
 
   function ua(){ return navigator.userAgent || ''; }
   function isWeChat(){ return /MicroMessenger/i.test(ua()); }
@@ -87,6 +90,7 @@
   btnDefault.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.default); });
   btnAlt1.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.alt1); });
   btnAlt2.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.alt2); });
+  btnXiyou.addEventListener('click', function(e){ e.preventDefault(); tryOpenExternal(urls.xiyou); });
 
   window.addEventListener('load', function(){
     if (isWeChat()) {
